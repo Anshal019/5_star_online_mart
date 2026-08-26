@@ -1,0 +1,156 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  name              String
+  sku               String   @unique
+  barcode           String   @unique
+  category          String
+  subCategory       String?
+  brand             String?
+  contentQty        String   @default("1 pc")
+  purchasePrice     Float    @default(0)
+  sellingPrice      Float
+  offerPrice        Float?
+  isTaxable         Boolean  @default(true)
+  gstRate           Int      @default(18)
+  hsnCode           String?
+  stock             Int      @default(0)
+  lowStockThreshold Int      @default(5)
+  unit              String   @default("Piece")
+  supplierName      String?
+  supplierId        String?
+  imageUrl          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([barcode])
+  @@index([sku])
+  @@index([category])
+  @@index([name])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+}
+
+model Supplier {
+  id            String   @id @default(cuid())
+  name          String
+  contactPerson String?
+  phone         String
+  email         String?
+  address       String?
+  createdAt     DateTime @default(now())
+}
+
+model Bill {
+  id            String     @id @default(cuid())
+  invoiceNo     String     @unique
+  subtotal      Float
+  discountTotal Float      @default(0)
+  taxTotal      Float      @default(0)
+  cgstTotal     Float      @default(0)
+  sgstTotal     Float      @default(0)
+  grandTotal    Float
+  paymentMode   String
+  cashReceived  Float?
+  cashChange    Float?
+  paymentStatus String     @default("Paid")
+  cashierId     String
+  cashierName   String
+  customerName  String?
+  customerPhone String?
+  status        String     @default("Completed")
+  createdAt     DateTime   @default(now())
+  items         BillItem[]
+
+  @@index([invoiceNo])
+  @@index([createdAt])
+}
+
+model BillItem {
+  id          String  @id @default(cuid())
+  billId      String
+  bill        Bill    @relation(fields: [billId], references: [id], onDelete: Cascade)
+  productId   String
+  productName String
+  barcode     String
+  sku         String
+  contentQty  String
+  quantity    Int
+  unitPrice   Float
+  discount    Float   @default(0)
+  isTaxable   Boolean
+  gstRate     Int
+  taxAmount   Float
+  totalAmount Float
+}
+
+model StockMovement {
+  id            String   @id @default(cuid())
+  productId     String
+  productName   String
+  type          String
+  qty           Int
+  previousStock Int
+  newStock      Int
+  reason        String?
+  referenceId   String?
+  user          String
+  createdAt     DateTime @default(now())
+
+  @@index([productId])
+  @@index([createdAt])
+}
+
+model User {
+  id       String  @id @default(cuid())
+  name     String
+  username String  @unique
+  role     String  @default("CASHIER")
+  pin      String  @default("0000")
+  active   Boolean @default(true)
+
+  @@index([username])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+  userId    String
+  userName  String
+  action    String
+  details   String
+
+  @@index([timestamp])
+  @@index([userId])
+}
+
+model ShopSettings {
+  id                  String  @id @default("default")
+  shopName            String  @default("5Star Online Mart")
+  tagline             String  @default("Premium Home Goods & Grocery Retail")
+  address             String  @default("Shop No. 1, Main Market Complex, Station Road")
+  phone               String  @default("+91 98765 43210")
+  email               String  @default("contact@5staronlinemart.com")
+  gstin               String  @default("07AAAAA0000A1Z5")
+  receiptHeader       String  @default("Thank you for shopping at 5Star Online Mart!")
+  receiptFooter       String  @default("Goods once sold can be exchanged within 7 days with valid bill.")
+  invoicePrefix       String  @default("5STAR-2026-")
+  defaultTaxMode      String  @default("EXCLUSIVE")
+  thermalReceiptWidth String  @default("80mm")
+  thermalLabelSize    String  @default("50x25")
+  labelShowShopName   Boolean @default(true)
+  labelShowMRPText    Boolean @default(true)
+  labelCustomHeader   String  @default("5STAR MART")
+}
