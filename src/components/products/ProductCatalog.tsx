@@ -155,15 +155,15 @@ export const ProductCatalog: React.FC = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 bg-black text-white">
+    <div className="p-4 md:p-6 space-y-6 bg-slate-50 text-slate-900">
       {/* Top Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Package className="w-7 h-7 text-white" />
+          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <Package className="w-7 h-7 text-blue-600" />
             Product Master Catalog
           </h2>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Manage product listings, prices, taxability, and auto-generated barcodes.
           </p>
         </div>
@@ -171,17 +171,17 @@ export const ProductCatalog: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setImportModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs border border-zinc-700 transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-300 transition-all"
           >
-            <Upload className="w-4 h-4 text-zinc-300" />
+            <Upload className="w-4 h-4 text-slate-600" />
             Bulk CSV Import
           </button>
 
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs border border-zinc-700 transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-300 transition-all"
           >
-            <Download className="w-4 h-4 text-zinc-300" />
+            <Download className="w-4 h-4 text-slate-600" />
             Export CSV
           </button>
 
@@ -190,7 +190,7 @@ export const ProductCatalog: React.FC = () => {
               setEditingProduct(null);
               setFormModalOpen(true);
             }}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-black hover:bg-zinc-200 font-extrabold text-xs shadow border-2 border-white transition-all active:scale-95"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow border border-blue-600 transition-all active:scale-95"
           >
             <Plus className="w-4 h-4" /> Add New Product
           </button>
@@ -198,23 +198,23 @@ export const ProductCatalog: React.FC = () => {
       </div>
 
       {/* Filter & Search Toolbar */}
-      <div className="glass-panel p-4 rounded-2xl border border-zinc-800 space-y-3 bg-zinc-950">
+      <div className="glass-panel p-4 rounded-2xl border border-slate-200 space-y-3 bg-white shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           <div className="relative sm:col-span-2">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by Name, Barcode, SKU, Brand..."
-              className="w-full pl-9 pr-3 py-2 text-xs rounded-xl glass-input text-white placeholder-zinc-500"
+              className="w-full pl-9 pr-3 py-2 text-xs rounded-xl glass-input text-slate-800 placeholder-slate-400"
             />
           </div>
 
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl glass-input text-white"
+            className="px-3 py-2 text-xs rounded-xl glass-input text-slate-800"
           >
             <option value="ALL">All Categories</option>
             {categories.map((c) => (
@@ -227,47 +227,51 @@ export const ProductCatalog: React.FC = () => {
           <select
             value={stockStatusFilter}
             onChange={(e) => setStockStatusFilter(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl glass-input text-white"
+            className="px-3 py-2 text-xs rounded-xl glass-input text-slate-800"
           >
             <option value="ALL">All Stock Statuses</option>
-            <option value="IN">In Stock</option>
-            <option value="LOW">Low Stock Alert</option>
-            <option value="OUT">Out of Stock</option>
+            <option value="IN_STOCK">In Stock</option>
+            <option value="LOW_STOCK">Low Stock</option>
+            <option value="OUT_OF_STOCK">Out of Stock</option>
           </select>
 
           <select
             value={taxFilter}
             onChange={(e) => setTaxFilter(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl glass-input text-white"
+            className="px-3 py-2 text-xs rounded-xl glass-input text-slate-800"
           >
             <option value="ALL">All Tax Types</option>
             <option value="TAXABLE">Taxable (GST)</option>
-            <option value="NON_TAXABLE">Non-Taxable (0%)</option>
+            <option value="EXEMPT">Exempt / Non-Taxable</option>
           </select>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-zinc-800 text-xs">
-          <div className="flex items-center gap-3">
-            <span className="text-zinc-400">Sort by:</span>
-            {(['recent', 'name', 'price', 'stock'] as const).map((s) => (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400 font-bold">Sort by:</span>
+            {(['recent', 'name', 'price', 'stock'] as const).map((opt) => (
               <button
-                key={s}
-                onClick={() => setSortBy(s)}
-                className={`capitalize px-2.5 py-1 rounded-lg transition-all ${
-                  sortBy === s ? 'bg-white text-black font-extrabold' : 'text-zinc-400 hover:text-white'
+                key={opt}
+                onClick={() => setSortBy(opt)}
+                className={`px-2.5 py-1 rounded-lg font-bold capitalize transition-colors ${
+                  sortBy === opt
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                {s}
+                {opt}
               </button>
             ))}
           </div>
 
           {selectedIds.length > 0 && (
             <div className="flex items-center gap-2">
-              <span className="text-white font-bold">{selectedIds.length} Selected</span>
+              <span className="text-slate-700 font-bold font-mono">
+                {selectedIds.length} Selected
+              </span>
               <button
                 onClick={handleBulkDelete}
-                className="px-3 py-1 rounded-lg bg-zinc-900 text-white hover:bg-zinc-800 font-bold border border-zinc-700 transition-colors"
+                className="px-3 py-1 rounded-lg bg-rose-600 text-white hover:bg-rose-700 font-bold transition-colors"
               >
                 Delete Selected
               </button>
@@ -277,10 +281,10 @@ export const ProductCatalog: React.FC = () => {
       </div>
 
       {/* Main Table */}
-      <div className="glass-panel rounded-2xl border border-zinc-800 overflow-hidden shadow-2xl bg-zinc-950">
+      <div className="glass-panel rounded-2xl border border-slate-200 overflow-hidden shadow-sm bg-white">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-zinc-300">
-            <thead className="bg-black text-zinc-400 font-bold border-b border-zinc-800 uppercase tracking-wider text-[10px]">
+          <table className="w-full text-left text-xs text-slate-700">
+            <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="p-3 w-10 text-center">
                   <input
@@ -290,7 +294,7 @@ export const ProductCatalog: React.FC = () => {
                       paginatedProducts.every((p) => selectedIds.includes(p.id))
                     }
                     onChange={handleSelectAllOnPage}
-                    className="rounded accent-white"
+                    className="rounded accent-blue-600"
                   />
                 </th>
                 <th className="p-3">Product Name & Content</th>
@@ -302,10 +306,10 @@ export const ProductCatalog: React.FC = () => {
                 <th className="p-3 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800">
+            <tbody className="divide-y divide-slate-100">
               {paginatedProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-zinc-400">
+                  <td colSpan={8} className="text-center py-12 text-slate-400">
                     No products matching your search criteria.
                   </td>
                 </tr>
@@ -318,8 +322,8 @@ export const ProductCatalog: React.FC = () => {
                   return (
                     <tr
                       key={p.id}
-                      className={`hover:bg-zinc-900 transition-colors ${
-                        isSelected ? 'bg-zinc-900' : ''
+                      className={`hover:bg-slate-50 transition-colors ${
+                        isSelected ? 'bg-blue-50/40' : ''
                       }`}
                     >
                       <td className="p-3 text-center">
@@ -327,14 +331,14 @@ export const ProductCatalog: React.FC = () => {
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => handleToggleSelect(p.id)}
-                          className="rounded accent-white"
+                          className="rounded accent-blue-600"
                         />
                       </td>
 
-                      <td className="p-3 font-medium text-white">
-                        <div className="font-bold text-sm text-white">{p.name}</div>
-                        <div className="text-[11px] text-zinc-400 flex items-center gap-2 mt-0.5">
-                          <span>Qty: <strong className="text-white">{p.contentQty}</strong></span>
+                      <td className="p-3 font-medium text-slate-900">
+                        <div className="font-bold text-sm text-slate-900">{p.name}</div>
+                        <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                          <span>Qty: <strong className="text-slate-800">{p.contentQty}</strong></span>
                           <span>•</span>
                           <span>SKU: {p.sku}</span>
                           {p.brand && (
@@ -347,50 +351,50 @@ export const ProductCatalog: React.FC = () => {
                       </td>
 
                       <td className="p-3">
-                        <span className="px-2 py-1 rounded bg-zinc-900 text-zinc-300 font-bold border border-zinc-800">
+                        <span className="px-2 py-1 rounded bg-slate-100 text-slate-700 font-bold border border-slate-200">
                           {p.category}
                         </span>
                       </td>
 
                       <td className="p-3 font-mono">
-                        <span className="px-2.5 py-1 rounded bg-black border border-zinc-700 text-white font-bold flex items-center gap-1.5 w-fit">
-                          <Barcode className="w-3.5 h-3.5" />
+                        <span className="px-2.5 py-1 rounded bg-blue-50 border border-blue-200 text-blue-800 font-bold flex items-center gap-1.5 w-fit">
+                          <Barcode className="w-3.5 h-3.5 text-blue-600" />
                           {p.barcode}
                         </span>
                       </td>
 
                       <td className="p-3">
                         {isOut ? (
-                          <span className="px-2 py-0.5 rounded bg-black text-zinc-500 font-bold border border-zinc-800 line-through">
+                          <span className="px-2 py-0.5 rounded bg-rose-50 text-rose-700 font-bold border border-rose-200 line-through">
                             Out of Stock (0)
                           </span>
                         ) : isLow ? (
-                          <span className="px-2 py-0.5 rounded bg-zinc-900 text-white font-bold border border-zinc-700 flex items-center gap-1 w-fit">
-                            <AlertTriangle className="w-3 h-3 text-white" /> Low Stock ({p.stock})
+                          <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 font-bold border border-amber-200 flex items-center gap-1 w-fit">
+                            <AlertTriangle className="w-3 h-3 text-amber-600" /> Low Stock ({p.stock})
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded bg-zinc-900 text-white font-bold border border-zinc-700">
+                          <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200">
                             In Stock ({p.stock})
                           </span>
                         )}
                       </td>
 
                       <td className="p-3 text-right font-mono">
-                        <div className="font-black text-sm text-white">
+                        <div className="font-black text-sm text-slate-900">
                           {formatCurrency(p.sellingPrice)}
                         </div>
                         {p.purchasePrice > 0 && (
-                          <div className="text-[10px] text-zinc-400">Cost: ₹{p.purchasePrice}</div>
+                          <div className="text-[10px] text-slate-400">Cost: ₹{p.purchasePrice}</div>
                         )}
                       </td>
 
                       <td className="p-3 text-center">
                         {p.isTaxable ? (
-                          <span className="px-2 py-0.5 rounded bg-zinc-900 text-white font-bold border border-zinc-800">
+                          <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold border border-slate-200">
                             {p.gstRate}% GST
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded bg-black text-zinc-500">
+                          <span className="px-2 py-0.5 rounded bg-slate-50 text-slate-400">
                             No Tax
                           </span>
                         )}
@@ -403,14 +407,14 @@ export const ProductCatalog: React.FC = () => {
                               setEditingProduct(p);
                               setFormModalOpen(true);
                             }}
-                            className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-800 transition-colors"
+                            className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors"
                             title="Edit Product"
                           >
                             <Edit3 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteSingle(p.id, p.name)}
-                            className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 transition-colors"
+                            className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition-colors"
                             title="Delete Product"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -425,7 +429,7 @@ export const ProductCatalog: React.FC = () => {
           </table>
         </div>
 
-        <div className="p-4 bg-black border-t border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
+        <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div>
             Showing {(currentPage - 1) * pageSize + 1} to{' '}
             {Math.min(currentPage * pageSize, sortedProducts.length)} of {sortedProducts.length} items
@@ -435,17 +439,17 @@ export const ProductCatalog: React.FC = () => {
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
-              className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 border border-zinc-800"
+              className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-40 border border-slate-300 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="font-bold text-white">
+            <span className="font-bold text-slate-900">
               Page {currentPage} of {totalPages}
             </span>
             <button
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage(currentPage + 1)}
-              className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 border border-zinc-800"
+              className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-40 border border-slate-300 transition-colors"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

@@ -7,6 +7,13 @@ import {
   ShopSettings,
   User,
   ActivityLog,
+  Customer,
+  UdharTransaction,
+  PaymentTransaction,
+  ReminderLog,
+  CustomerNote,
+  PaymentStatus,
+  LedgerEntry,
 } from '@/types';
 import { generateBarcodeNumber, generateSKU } from './barcode';
 
@@ -22,6 +29,11 @@ const STORAGE_KEYS = {
   CURRENT_USER: '5star_erp_current_user',
   LOGS: '5star_erp_logs',
   SEQUENCE: '5star_erp_sequence',
+  CUSTOMERS: '5star_erp_customers',
+  UDHAR_TXNS: '5star_erp_udhar_txns',
+  PAYMENT_TXNS: '5star_erp_payment_txns',
+  REMINDERS: '5star_erp_reminders',
+  CUSTOMER_NOTES: '5star_erp_customer_notes',
 };
 
 const DEFAULT_SETTINGS: ShopSettings = {
@@ -194,6 +206,210 @@ function generateInitialBills(products: Product[]): Bill[] {
   return bills;
 }
 
+function generateInitialUdharData() {
+  const now = new Date();
+  const date30Ago = new Date(now.getTime() - 30 * 86400000).toISOString().split('T')[0];
+  const date20Ago = new Date(now.getTime() - 20 * 86400000).toISOString().split('T')[0];
+  const date15Ago = new Date(now.getTime() - 15 * 86400000).toISOString().split('T')[0];
+  const date5Ago = new Date(now.getTime() - 5 * 86400000).toISOString().split('T')[0];
+  const duePast = new Date(now.getTime() - 10 * 86400000).toISOString().split('T')[0];
+  const dueFuture = new Date(now.getTime() + 10 * 86400000).toISOString().split('T')[0];
+
+  const customers: Customer[] = [
+    {
+      id: 'cust-1001',
+      customerId: 'CUST-1001',
+      name: 'Rahul Patel',
+      mobile: '9876543210',
+      address: 'Station Road, Anand',
+      shopName: 'Rahul Traders',
+      registrationDate: date30Ago,
+      notes: 'Customer usually pays via UPI on weekends.',
+      totalUdhar: 12500,
+      totalReceived: 7500,
+      totalPending: 5000,
+      paymentStatus: 'PARTIAL PAID',
+      createdAt: date30Ago,
+      updatedAt: date5Ago,
+    },
+    {
+      id: 'cust-1002',
+      customerId: 'CUST-1002',
+      name: 'Anshul Sharma',
+      mobile: '9812345678',
+      address: 'MG Road Complex, Nadiad',
+      shopName: 'Sharma Sweets',
+      registrationDate: date30Ago,
+      notes: 'Promised to clear payment by 10th of every month.',
+      totalUdhar: 8500,
+      totalReceived: 0,
+      totalPending: 8500,
+      paymentStatus: 'OVERDUE',
+      createdAt: date30Ago,
+      updatedAt: date20Ago,
+    },
+    {
+      id: 'cust-1003',
+      customerId: 'CUST-1003',
+      name: 'Vikram Singh',
+      mobile: '9988776655',
+      address: 'Market Yard, Vadodara',
+      shopName: 'Singh Hardware',
+      registrationDate: date15Ago,
+      notes: 'Always pays immediately.',
+      totalUdhar: 4500,
+      totalReceived: 4500,
+      totalPending: 0,
+      paymentStatus: 'PAID',
+      createdAt: date15Ago,
+      updatedAt: date5Ago,
+    },
+  ];
+
+  const udharTxns: UdharTransaction[] = [
+    {
+      id: 'udh-1',
+      customerId: 'cust-1001',
+      customerName: 'Rahul Patel',
+      date: date30Ago,
+      productName: 'Stainless Steel Pressure Cooker 3L',
+      quantity: 5,
+      productPrice: 1299,
+      totalAmount: 6495,
+      amountPaidNow: 1495,
+      remainingAmount: 5000,
+      dueDate: duePast,
+      notes: 'Bulk order for shop kitchen setup',
+      createdAt: date30Ago,
+    },
+    {
+      id: 'udh-2',
+      customerId: 'cust-1001',
+      customerName: 'Rahul Patel',
+      date: date15Ago,
+      productName: 'Spin Mop Set with Bucket & 2 Refills',
+      quantity: 10,
+      productPrice: 899,
+      totalAmount: 8990,
+      amountPaidNow: 3990,
+      remainingAmount: 5000,
+      dueDate: dueFuture,
+      notes: 'Resale batch stock',
+      createdAt: date15Ago,
+    },
+    {
+      id: 'udh-3',
+      customerId: 'cust-1002',
+      customerName: 'Anshul Sharma',
+      date: date20Ago,
+      productName: 'Airtight Food Storage Container Set',
+      quantity: 17,
+      productPrice: 499,
+      totalAmount: 8483,
+      amountPaidNow: 0,
+      remainingAmount: 8500,
+      dueDate: duePast,
+      notes: 'Festival sweet packing containers',
+      createdAt: date20Ago,
+    },
+    {
+      id: 'udh-4',
+      customerId: 'cust-1003',
+      customerName: 'Vikram Singh',
+      date: date15Ago,
+      productName: 'Heavy Duty Dry Iron 1000W',
+      quantity: 5,
+      productPrice: 799,
+      totalAmount: 3995,
+      amountPaidNow: 0,
+      remainingAmount: 4500,
+      dueDate: date5Ago,
+      notes: 'Hardware store display items',
+      createdAt: date15Ago,
+    },
+  ];
+
+  const paymentTxns: PaymentTransaction[] = [
+    {
+      id: 'pay-1',
+      customerId: 'cust-1001',
+      customerName: 'Rahul Patel',
+      paymentAmount: 2500,
+      paymentDate: date15Ago,
+      paymentMethod: 'UPI',
+      refNumber: 'UPI/409823104921',
+      notes: 'Partial payment on Google Pay',
+      createdAt: date15Ago,
+    },
+    {
+      id: 'pay-2',
+      customerId: 'cust-1001',
+      customerName: 'Rahul Patel',
+      paymentAmount: 2500,
+      paymentDate: date5Ago,
+      paymentMethod: 'Cash',
+      refNumber: 'CASH-REC-012',
+      notes: 'Direct cash given at shop counter',
+      createdAt: date5Ago,
+    },
+    {
+      id: 'pay-3',
+      customerId: 'cust-1003',
+      customerName: 'Vikram Singh',
+      paymentAmount: 4500,
+      paymentDate: date5Ago,
+      paymentMethod: 'Bank Transfer',
+      refNumber: 'NEFT-889021-SBIN',
+      notes: 'Full bill clearance via NEFT',
+      createdAt: date5Ago,
+    },
+  ];
+
+  const reminderLogs: ReminderLog[] = [
+    {
+      id: 'rem-1',
+      customerId: 'cust-1002',
+      customerName: 'Anshul Sharma',
+      reminderDate: date5Ago,
+      pendingAmount: 8500,
+      daysPending: 20,
+      reminderType: 'Overdue Reminder',
+      status: 'Sent',
+      createdAt: date5Ago,
+    },
+    {
+      id: 'rem-2',
+      customerId: 'cust-1001',
+      customerName: 'Rahul Patel',
+      reminderDate: date5Ago,
+      pendingAmount: 5000,
+      daysPending: 15,
+      reminderType: '15 Days Reminder',
+      status: 'Sent',
+      createdAt: date5Ago,
+    },
+  ];
+
+  const customerNotes: CustomerNote[] = [
+    {
+      id: 'note-1',
+      customerId: 'cust-1001',
+      noteDate: date30Ago,
+      content: 'Customer promised to pay by 10 September.',
+      createdAt: date30Ago,
+    },
+    {
+      id: 'note-2',
+      customerId: 'cust-1002',
+      noteDate: date20Ago,
+      content: 'Customer usually pays monthly after festival sales.',
+      createdAt: date20Ago,
+    },
+  ];
+
+  return { customers, udharTxns, paymentTxns, reminderLogs, customerNotes };
+}
+
 export function initializeStorage() {
   if (typeof window === 'undefined') return;
 
@@ -224,6 +440,15 @@ export function initializeStorage() {
 
   if (!localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) {
     localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(INITIAL_USERS[0]));
+  }
+
+  if (!localStorage.getItem(STORAGE_KEYS.CUSTOMERS)) {
+    const { customers, udharTxns, paymentTxns, reminderLogs, customerNotes } = generateInitialUdharData();
+    localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customers));
+    localStorage.setItem(STORAGE_KEYS.UDHAR_TXNS, JSON.stringify(udharTxns));
+    localStorage.setItem(STORAGE_KEYS.PAYMENT_TXNS, JSON.stringify(paymentTxns));
+    localStorage.setItem(STORAGE_KEYS.REMINDERS, JSON.stringify(reminderLogs));
+    localStorage.setItem(STORAGE_KEYS.CUSTOMER_NOTES, JSON.stringify(customerNotes));
   }
 }
 
@@ -638,5 +863,406 @@ export const StorageAPI = {
     initializeStorage();
 
     fetch('/api/seed', { method: 'POST' }).catch(() => {});
+  },
+
+  // ==========================================
+  // UDHAR KHATA / CREDIT MANAGEMENT STORAGE API
+  // ==========================================
+  getCustomers(): Customer[] {
+    if (typeof window === 'undefined') return [];
+    initializeStorage();
+    const data = localStorage.getItem(STORAGE_KEYS.CUSTOMERS);
+    return data ? JSON.parse(data) : [];
+  },
+
+  getCustomerById(id: string): Customer | undefined {
+    const customers = this.getCustomers();
+    return customers.find(c => c.id === id || c.customerId === id);
+  },
+
+  saveCustomer(customerData: Partial<Customer> & { name: string; mobile: string }): Customer {
+    const customers = this.getCustomers();
+    const now = new Date().toISOString();
+
+    if (customerData.id) {
+      const index = customers.findIndex(c => c.id === customerData.id);
+      if (index !== -1) {
+        const updated: Customer = {
+          ...customers[index],
+          ...customerData,
+          updatedAt: now,
+        };
+        customers[index] = updated;
+        localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customers));
+        this.logActivity('UPDATE_CUSTOMER', `Updated customer: ${updated.name} (${updated.customerId})`);
+        return updated;
+      }
+    }
+
+    const nextSeq = 1001 + customers.length;
+    const newCustomer: Customer = {
+      id: `cust-${Date.now()}`,
+      customerId: customerData.customerId || `CUST-${nextSeq}`,
+      name: customerData.name,
+      mobile: customerData.mobile,
+      address: customerData.address || '',
+      shopName: customerData.shopName || '',
+      registrationDate: customerData.registrationDate || now.split('T')[0],
+      notes: customerData.notes || '',
+      totalUdhar: customerData.totalUdhar || 0,
+      totalReceived: customerData.totalReceived || 0,
+      totalPending: customerData.totalPending || 0,
+      paymentStatus: customerData.paymentStatus || 'PAID',
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    customers.unshift(newCustomer);
+    localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customers));
+    this.logActivity('ADD_CUSTOMER', `Created new customer: ${newCustomer.name} (${newCustomer.customerId})`);
+    return newCustomer;
+  },
+
+  deleteCustomer(id: string): boolean {
+    let customers = this.getCustomers();
+    const target = customers.find(c => c.id === id || c.customerId === id);
+    if (target) {
+      customers = customers.filter(c => c.id !== target.id);
+      localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customers));
+
+      // Remove related txns
+      let udhTxns = this.getUdharTransactions().filter(t => t.customerId !== target.id);
+      let payTxns = this.getPaymentTransactions().filter(t => t.customerId !== target.id);
+      localStorage.setItem(STORAGE_KEYS.UDHAR_TXNS, JSON.stringify(udhTxns));
+      localStorage.setItem(STORAGE_KEYS.PAYMENT_TXNS, JSON.stringify(payTxns));
+
+      this.logActivity('DELETE_CUSTOMER', `Deleted customer: ${target.name} (${target.customerId})`);
+      return true;
+    }
+    return false;
+  },
+
+  recalculateCustomerStatus(customerId: string): Customer | null {
+    const customers = this.getCustomers();
+    const index = customers.findIndex(c => c.id === customerId || c.customerId === customerId);
+    if (index === -1) return null;
+
+    const cust = customers[index];
+    const udhTxns = this.getUdharTransactions(cust.id);
+    const payTxns = this.getPaymentTransactions(cust.id);
+
+    const totalUdhar = udhTxns.reduce((sum, t) => sum + t.totalAmount, 0);
+    const totalReceivedFromUdharPaid = udhTxns.reduce((sum, t) => sum + t.amountPaidNow, 0);
+    const totalReceivedFromPayTxns = payTxns.reduce((sum, t) => sum + t.paymentAmount, 0);
+    const totalReceived = totalReceivedFromUdharPaid + totalReceivedFromPayTxns;
+    const totalPending = Math.max(0, totalUdhar - totalReceived);
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    let isOverdue = false;
+
+    if (totalPending > 0) {
+      // Check if any udhar transaction with remaining amount is past due date
+      isOverdue = udhTxns.some(t => t.dueDate < todayStr && t.remainingAmount > 0);
+    }
+
+    let status: PaymentStatus = 'PAID';
+    if (totalPending <= 0) {
+      status = 'PAID';
+    } else if (isOverdue) {
+      status = 'OVERDUE';
+    } else if (totalReceived > 0) {
+      status = 'PARTIAL PAID';
+    } else {
+      status = 'PENDING';
+    }
+
+    cust.totalUdhar = totalUdhar;
+    cust.totalReceived = totalReceived;
+    cust.totalPending = totalPending;
+    cust.paymentStatus = status;
+    cust.updatedAt = new Date().toISOString();
+
+    customers[index] = cust;
+    localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customers));
+    return cust;
+  },
+
+  getUdharTransactions(customerId?: string): UdharTransaction[] {
+    if (typeof window === 'undefined') return [];
+    initializeStorage();
+    const data = localStorage.getItem(STORAGE_KEYS.UDHAR_TXNS);
+    const list: UdharTransaction[] = data ? JSON.parse(data) : [];
+    if (customerId) {
+      return list.filter(t => t.customerId === customerId);
+    }
+    return list;
+  },
+
+  saveUdharTransaction(data: {
+    customerId: string;
+    date: string;
+    productName: string;
+    quantity: number;
+    productPrice: number;
+    amountPaidNow: number;
+    dueDate: string;
+    notes?: string;
+  }): UdharTransaction {
+    const customer = this.getCustomerById(data.customerId);
+    if (!customer) throw new Error('Customer not found');
+
+    const quantity = Number(data.quantity) || 1;
+    const productPrice = Number(data.productPrice) || 0;
+    const amountPaidNow = Number(data.amountPaidNow) || 0;
+
+    const totalAmount = quantity * productPrice;
+    const remainingAmount = Math.max(0, totalAmount - amountPaidNow);
+
+    const now = new Date().toISOString();
+    const newTxn: UdharTransaction = {
+      id: `udh-${Date.now()}`,
+      customerId: customer.id,
+      customerName: customer.name,
+      date: data.date || now.split('T')[0],
+      productName: data.productName,
+      quantity,
+      productPrice,
+      totalAmount,
+      amountPaidNow,
+      remainingAmount,
+      dueDate: data.dueDate,
+      notes: data.notes || '',
+      createdAt: now,
+    };
+
+    const udhTxns = this.getUdharTransactions();
+    udhTxns.unshift(newTxn);
+    localStorage.setItem(STORAGE_KEYS.UDHAR_TXNS, JSON.stringify(udhTxns));
+
+    // If customer paid some amount upfront during Udhar addition, log as payment record too if needed
+    if (amountPaidNow > 0) {
+      const payTxns = this.getPaymentTransactions();
+      payTxns.unshift({
+        id: `pay-upfront-${Date.now()}`,
+        customerId: customer.id,
+        customerName: customer.name,
+        paymentAmount: amountPaidNow,
+        paymentDate: data.date || now.split('T')[0],
+        paymentMethod: 'Cash',
+        notes: `Upfront payment for ${data.productName}`,
+        createdAt: now,
+      });
+      localStorage.setItem(STORAGE_KEYS.PAYMENT_TXNS, JSON.stringify(payTxns));
+    }
+
+    this.recalculateCustomerStatus(customer.id);
+    this.logActivity('ADD_UDHAR', `Added Udhar of ₹${totalAmount} for ${customer.name} (${data.productName})`);
+    return newTxn;
+  },
+
+  getPaymentTransactions(customerId?: string): PaymentTransaction[] {
+    if (typeof window === 'undefined') return [];
+    initializeStorage();
+    const data = localStorage.getItem(STORAGE_KEYS.PAYMENT_TXNS);
+    const list: PaymentTransaction[] = data ? JSON.parse(data) : [];
+    if (customerId) {
+      return list.filter(t => t.customerId === customerId);
+    }
+    return list;
+  },
+
+  savePaymentTransaction(data: {
+    customerId: string;
+    paymentAmount: number;
+    paymentDate: string;
+    paymentMethod: 'Cash' | 'UPI' | 'Bank Transfer';
+    refNumber?: string;
+    notes?: string;
+  }): PaymentTransaction {
+    const customer = this.getCustomerById(data.customerId);
+    if (!customer) throw new Error('Customer not found');
+
+    const paymentAmount = Number(data.paymentAmount) || 0;
+    const now = new Date().toISOString();
+
+    const newPayment: PaymentTransaction = {
+      id: `pay-${Date.now()}`,
+      customerId: customer.id,
+      customerName: customer.name,
+      paymentAmount,
+      paymentDate: data.paymentDate || now.split('T')[0],
+      paymentMethod: data.paymentMethod || 'Cash',
+      refNumber: data.refNumber || '',
+      notes: data.notes || '',
+      createdAt: now,
+    };
+
+    const payTxns = this.getPaymentTransactions();
+    payTxns.unshift(newPayment);
+    localStorage.setItem(STORAGE_KEYS.PAYMENT_TXNS, JSON.stringify(payTxns));
+
+    this.recalculateCustomerStatus(customer.id);
+    this.logActivity('RECEIVE_PAYMENT', `Received payment of ₹${paymentAmount} from ${customer.name} via ${data.paymentMethod}`);
+    return newPayment;
+  },
+
+  getCustomerLedger(customerId: string): LedgerEntry[] {
+    const udhTxns = this.getUdharTransactions(customerId);
+    const payTxns = this.getPaymentTransactions(customerId);
+
+    // Filter out upfront payment logs if they duplicate udhar txns amountPaidNow
+    const filteredPayTxns = payTxns.filter(p => !p.id.startsWith('pay-upfront-'));
+
+    interface RawEntry {
+      id: string;
+      date: string;
+      details: string;
+      productName?: string;
+      credit: number;
+      received: number;
+      type: 'CREDIT' | 'PAYMENT';
+      createdAt: string;
+    }
+
+    const rawList: RawEntry[] = [];
+
+    udhTxns.forEach(u => {
+      rawList.push({
+        id: u.id,
+        date: u.date,
+        details: `Credit Sale: ${u.productName} (${u.quantity} × ₹${u.productPrice})`,
+        productName: u.productName,
+        credit: u.totalAmount,
+        received: u.amountPaidNow,
+        type: 'CREDIT',
+        createdAt: u.createdAt,
+      });
+    });
+
+    filteredPayTxns.forEach(p => {
+      rawList.push({
+        id: p.id,
+        date: p.paymentDate,
+        details: `Payment Received (${p.paymentMethod}${p.refNumber ? ` - ${p.refNumber}` : ''})`,
+        credit: 0,
+        received: p.paymentAmount,
+        type: 'PAYMENT',
+        createdAt: p.createdAt,
+      });
+    });
+
+    // Sort chronologically
+    rawList.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+    let runningBalance = 0;
+    const ledger: LedgerEntry[] = rawList.map(item => {
+      runningBalance += item.credit - item.received;
+      return {
+        id: item.id,
+        date: item.date,
+        transactionDetails: item.details,
+        productName: item.productName || '-',
+        creditAmount: item.credit,
+        paymentReceived: item.received,
+        remainingBalance: Math.max(0, runningBalance),
+        runningBalance: runningBalance,
+        type: item.type,
+      };
+    });
+
+    return ledger;
+  },
+
+  getReminderLogs(): ReminderLog[] {
+    if (typeof window === 'undefined') return [];
+    initializeStorage();
+    const data = localStorage.getItem(STORAGE_KEYS.REMINDERS);
+    return data ? JSON.parse(data) : [];
+  },
+
+  logReminder(reminder: Omit<ReminderLog, 'id' | 'createdAt'>): ReminderLog {
+    const logs = this.getReminderLogs();
+    const newLog: ReminderLog = {
+      ...reminder,
+      id: `rem-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    };
+    logs.unshift(newLog);
+    localStorage.setItem(STORAGE_KEYS.REMINDERS, JSON.stringify(logs));
+    return newLog;
+  },
+
+  getCustomerNotes(customerId?: string): CustomerNote[] {
+    if (typeof window === 'undefined') return [];
+    initializeStorage();
+    const data = localStorage.getItem(STORAGE_KEYS.CUSTOMER_NOTES);
+    const list: CustomerNote[] = data ? JSON.parse(data) : [];
+    if (customerId) {
+      return list.filter(n => n.customerId === customerId);
+    }
+    return list;
+  },
+
+  saveCustomerNote(customerId: string, content: string): CustomerNote {
+    const notes = this.getCustomerNotes();
+    const now = new Date().toISOString();
+    const newNote: CustomerNote = {
+      id: `note-${Date.now()}`,
+      customerId,
+      noteDate: now.split('T')[0],
+      content,
+      createdAt: now,
+    };
+    notes.unshift(newNote);
+    localStorage.setItem(STORAGE_KEYS.CUSTOMER_NOTES, JSON.stringify(notes));
+    return newNote;
+  },
+
+  deleteCustomerNote(noteId: string): boolean {
+    let notes = this.getCustomerNotes();
+    const target = notes.find(n => n.id === noteId);
+    if (target) {
+      notes = notes.filter(n => n.id !== noteId);
+      localStorage.setItem(STORAGE_KEYS.CUSTOMER_NOTES, JSON.stringify(notes));
+      return true;
+    }
+    return false;
+  },
+
+  exportUdharData(): string {
+    const payload = {
+      customers: this.getCustomers(),
+      udharTransactions: this.getUdharTransactions(),
+      paymentTransactions: this.getPaymentTransactions(),
+      reminderLogs: this.getReminderLogs(),
+      customerNotes: this.getCustomerNotes(),
+      exportTimestamp: new Date().toISOString(),
+    };
+    return JSON.stringify(payload, null, 2);
+  },
+
+  importUdharData(jsonString: string): boolean {
+    try {
+      const data = JSON.parse(jsonString);
+      if (data.customers && Array.isArray(data.customers)) {
+        localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(data.customers));
+      }
+      if (data.udharTransactions && Array.isArray(data.udharTransactions)) {
+        localStorage.setItem(STORAGE_KEYS.UDHAR_TXNS, JSON.stringify(data.udharTransactions));
+      }
+      if (data.paymentTransactions && Array.isArray(data.paymentTransactions)) {
+        localStorage.setItem(STORAGE_KEYS.PAYMENT_TXNS, JSON.stringify(data.paymentTransactions));
+      }
+      if (data.reminderLogs && Array.isArray(data.reminderLogs)) {
+        localStorage.setItem(STORAGE_KEYS.REMINDERS, JSON.stringify(data.reminderLogs));
+      }
+      if (data.customerNotes && Array.isArray(data.customerNotes)) {
+        localStorage.setItem(STORAGE_KEYS.CUSTOMER_NOTES, JSON.stringify(data.customerNotes));
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 };
+

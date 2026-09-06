@@ -138,3 +138,84 @@ export interface LabelPrintItem {
   product: Product;
   printQuantity: number;
 }
+
+// Udhar Khata / Credit Management Models
+export type PaymentStatus = 'PAID' | 'PARTIAL PAID' | 'PENDING' | 'OVERDUE';
+
+export interface Customer {
+  id: string;
+  customerId: string; // e.g. CUST-1001
+  name: string;
+  mobile: string;
+  address?: string;
+  shopName?: string;
+  registrationDate: string;
+  notes?: string;
+  totalUdhar: number;
+  totalReceived: number;
+  totalPending: number;
+  paymentStatus: PaymentStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UdharTransaction {
+  id: string;
+  customerId: string;
+  customerName: string;
+  date: string;
+  productName: string;
+  quantity: number;
+  productPrice: number;
+  totalAmount: number;
+  amountPaidNow: number;
+  remainingAmount: number;
+  dueDate: string;
+  notes?: string;
+  createdAt: string;
+}
+
+export interface PaymentTransaction {
+  id: string;
+  customerId: string;
+  customerName: string;
+  paymentAmount: number;
+  paymentDate: string;
+  paymentMethod: 'Cash' | 'UPI' | 'Bank Transfer';
+  refNumber?: string;
+  notes?: string;
+  createdAt: string;
+}
+
+export interface ReminderLog {
+  id: string;
+  customerId: string;
+  customerName: string;
+  reminderDate: string;
+  pendingAmount: number;
+  daysPending: number;
+  reminderType: '7 Days Reminder' | '15 Days Reminder' | '30 Days Reminder' | 'Due Date Reminder' | 'Overdue Reminder';
+  status: 'Sent' | 'Pending';
+  createdAt: string;
+}
+
+export interface CustomerNote {
+  id: string;
+  customerId: string;
+  noteDate: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface LedgerEntry {
+  id: string;
+  date: string;
+  transactionDetails: string;
+  productName?: string;
+  creditAmount: number; // + Udhar given
+  paymentReceived: number; // - Payment received
+  remainingBalance: number;
+  runningBalance: number;
+  type: 'CREDIT' | 'PAYMENT';
+}
+

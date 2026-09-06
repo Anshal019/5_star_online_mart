@@ -141,26 +141,26 @@ export const ReportsDashboard: React.FC = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 bg-black text-white">
+    <div className="p-4 md:p-6 space-y-6 bg-slate-50 text-slate-900 max-w-[1700px] mx-auto">
       {/* Top Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <BarChart3 className="w-7 h-7 text-white" />
+          <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2">
+            <BarChart3 className="w-7 h-7 text-blue-600" />
             GST Tax & Profit Analytics Dashboard
           </h2>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Real-time financial performance, GST tax collections, product margins, and sales trends.
           </p>
         </div>
 
-        <div className="flex items-center gap-1 p-1 bg-zinc-950 rounded-xl border border-zinc-800 text-xs font-bold">
+        <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-bold">
           {(['TODAY', 'THIS_WEEK', 'THIS_MONTH', 'ALL'] as const).map((r) => (
             <button
               key={r}
               onClick={() => setDateRange(r)}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
-                dateRange === r ? 'bg-white text-black font-extrabold shadow' : 'text-zinc-400 hover:text-white'
+              className={`px-3.5 py-2 rounded-lg transition-all ${
+                dateRange === r ? 'bg-blue-600 text-white font-extrabold shadow-sm' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {r.replace('_', ' ')}
@@ -171,58 +171,58 @@ export const ReportsDashboard: React.FC = () => {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="glass-panel p-4 rounded-2xl border border-zinc-800 space-y-1 bg-zinc-950">
-          <div className="flex justify-between text-xs text-zinc-400">
+        <div className="glass-panel p-4 rounded-2xl border border-slate-200 space-y-1 bg-white shadow-sm">
+          <div className="flex justify-between text-xs text-slate-500 font-extrabold uppercase">
             <span>Total Sales Revenue</span>
-            <DollarSign className="w-4 h-4 text-white" />
+            <DollarSign className="w-4 h-4 text-blue-600" />
           </div>
-          <p className="text-2xl font-black text-white">{formatCurrency(totalRevenue)}</p>
-          <p className="text-[10px] text-zinc-500">{totalBillsCount} Bills issued</p>
+          <p className="text-2xl font-black text-slate-900 font-mono">{formatCurrency(totalRevenue)}</p>
+          <p className="text-[10px] text-slate-500">{totalBillsCount} Bills issued</p>
         </div>
 
-        <div className="glass-panel p-4 rounded-2xl border border-zinc-800 space-y-1 bg-zinc-950">
-          <div className="flex justify-between text-xs text-zinc-400">
+        <div className="glass-panel p-4 rounded-2xl border border-slate-200 space-y-1 bg-white shadow-sm">
+          <div className="flex justify-between text-xs text-slate-500 font-extrabold uppercase">
             <span>Gross Profit Margin</span>
-            <TrendingUp className="w-4 h-4 text-white" />
+            <TrendingUp className="w-4 h-4 text-emerald-600" />
           </div>
-          <p className="text-2xl font-black text-white">{formatCurrency(grossProfit)}</p>
-          <p className="text-[10px] text-zinc-300 font-bold">
+          <p className="text-2xl font-black text-emerald-700 font-mono">{formatCurrency(grossProfit)}</p>
+          <p className="text-[10px] text-slate-500 font-bold">
             {profitMarginPercent.toFixed(1)}% Profit Margin
           </p>
         </div>
 
-        <div className="glass-panel p-4 rounded-2xl border border-zinc-800 space-y-1 bg-zinc-950">
-          <div className="flex justify-between text-xs text-zinc-400">
+        <div className="glass-panel p-4 rounded-2xl border border-slate-200 space-y-1 bg-white shadow-sm">
+          <div className="flex justify-between text-xs text-slate-500 font-extrabold uppercase">
             <span>Total GST Tax Collected</span>
-            <Receipt className="w-4 h-4 text-white" />
+            <Receipt className="w-4 h-4 text-blue-600" />
           </div>
-          <p className="text-2xl font-black text-white">{formatCurrency(totalGSTCollected)}</p>
-          <p className="text-[10px] text-zinc-500">CGST + SGST Split</p>
+          <p className="text-2xl font-black text-slate-900 font-mono">{formatCurrency(totalGSTCollected)}</p>
+          <p className="text-[10px] text-slate-500">CGST + SGST Split</p>
         </div>
 
-        <div className="glass-panel p-4 rounded-2xl border border-zinc-800 space-y-1 bg-zinc-950">
-          <div className="flex justify-between text-xs text-zinc-400">
+        <div className="glass-panel p-4 rounded-2xl border border-slate-200 space-y-1 bg-white shadow-sm">
+          <div className="flex justify-between text-xs text-slate-500 font-extrabold uppercase">
             <span>Average Ticket Size</span>
-            <Award className="w-4 h-4 text-white" />
+            <Award className="w-4 h-4 text-blue-600" />
           </div>
-          <p className="text-2xl font-black text-white">{formatCurrency(averageTicket)}</p>
-          <p className="text-[10px] text-zinc-500">Per bill average</p>
+          <p className="text-2xl font-black text-slate-900 font-mono">{formatCurrency(averageTicket)}</p>
+          <p className="text-[10px] text-slate-500">Per bill average</p>
         </div>
       </div>
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8 glass-panel p-5 rounded-2xl border border-zinc-800 space-y-4 bg-zinc-950">
-          <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
-            <h3 className="font-bold text-sm text-white flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-white" /> Revenue & Sales Trend
+        <div className="lg:col-span-8 glass-panel p-5 rounded-2xl border border-slate-200 space-y-4 bg-white shadow-sm">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-blue-600" /> Revenue & Sales Trend
             </h3>
-            <span className="text-xs text-zinc-400 font-mono">Total {chartData.length} Days</span>
+            <span className="text-xs text-slate-500 font-mono">Total {chartData.length} Days</span>
           </div>
 
           <div className="h-72 w-full">
             {chartData.length === 0 ? (
-              <div className="flex items-center justify-center h-full text-xs text-zinc-500">
+              <div className="flex items-center justify-center h-full text-xs text-slate-400">
                 No billing data for selected date range.
               </div>
             ) : (
@@ -230,25 +230,25 @@ export const ReportsDashboard: React.FC = () => {
                 <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="colorRevBW" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#ffffff" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#ffffff" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-                  <XAxis dataKey="date" stroke="#a1a1aa" fontSize={11} />
-                  <YAxis stroke="#a1a1aa" fontSize={11} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis dataKey="date" stroke="#64748b" fontSize={11} />
+                  <YAxis stroke="#64748b" fontSize={11} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#000000',
-                      borderColor: '#ffffff',
+                      backgroundColor: '#ffffff',
+                      borderColor: '#cbd5e1',
                       borderRadius: '8px',
-                      color: '#fff',
+                      color: '#0f172a',
                     }}
                   />
                   <Area
                     type="monotone"
                     dataKey="revenue"
-                    stroke="#ffffff"
+                    stroke="#2563eb"
                     strokeWidth={2}
                     fillOpacity={1}
                     fill="url(#colorRevBW)"
@@ -259,32 +259,32 @@ export const ReportsDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-4 glass-panel p-5 rounded-2xl border border-zinc-800 space-y-4 bg-zinc-950">
-          <h3 className="font-bold text-sm text-white flex items-center gap-2 pb-2 border-b border-zinc-800">
-            <Award className="w-4 h-4 text-white" /> Best Selling Products
+        <div className="lg:col-span-4 glass-panel p-5 rounded-2xl border border-slate-200 space-y-4 bg-white shadow-sm">
+          <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2 pb-2 border-b border-slate-100">
+            <Award className="w-4 h-4 text-blue-600" /> Best Selling Products
           </h3>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {topSellers.length === 0 ? (
-              <p className="text-xs text-zinc-500 py-8 text-center">No sales recorded yet.</p>
+              <p className="text-xs text-slate-400 py-8 text-center">No sales recorded yet.</p>
             ) : (
               topSellers.map((item, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-2.5 rounded-xl bg-black border border-zinc-800 text-xs"
+                  className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs"
                 >
                   <div className="flex items-center gap-2.5">
-                    <span className="w-6 h-6 rounded-lg bg-white text-black font-extrabold flex items-center justify-center text-xs">
+                    <span className="w-6 h-6 rounded-lg bg-blue-600 text-white font-black flex items-center justify-center text-xs">
                       #{idx + 1}
                     </span>
                     <div>
-                      <p className="font-bold text-white truncate max-w-[140px]">{item.name}</p>
-                      <p className="text-[10px] text-zinc-400">{item.category}</p>
+                      <p className="font-bold text-slate-900 truncate max-w-[140px]">{item.name}</p>
+                      <p className="text-[10px] text-slate-500">{item.category}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-black text-white">{formatCurrency(item.revenue)}</p>
-                    <p className="text-[10px] text-zinc-400">{item.qty} units sold</p>
+                    <p className="font-black text-slate-900 font-mono">{formatCurrency(item.revenue)}</p>
+                    <p className="text-[10px] text-slate-500 font-mono">{item.qty} units sold</p>
                   </div>
                 </div>
               ))
@@ -294,26 +294,26 @@ export const ReportsDashboard: React.FC = () => {
       </div>
 
       {/* GST Table */}
-      <div className="glass-panel p-5 rounded-2xl border border-zinc-800 space-y-4 bg-zinc-950">
-        <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+      <div className="glass-panel p-5 rounded-2xl border border-slate-200 space-y-4 bg-white shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
-            <h3 className="font-bold text-sm text-white flex items-center gap-2">
-              <Receipt className="w-4 h-4 text-white" /> GST Tax Collection Breakdown (Monthly GSTR Filing)
+            <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+              <Receipt className="w-4 h-4 text-blue-600" /> GST Tax Collection Breakdown (Monthly GSTR Filing)
             </h3>
-            <p className="text-xs text-zinc-400">Summarized B2C tax split per GST slab</p>
+            <p className="text-xs text-slate-500">Summarized B2C tax split per GST slab</p>
           </div>
 
           <button
             onClick={handleExportGSTReport}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800 text-xs font-bold border border-zinc-700 transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-extrabold border border-blue-200 transition-all shadow-xs"
           >
-            <Download className="w-3.5 h-3.5" /> Export GST Report (CSV)
+            <Download className="w-4 h-4 text-blue-600" /> Export GST Report (CSV)
           </button>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-zinc-300">
-            <thead className="bg-black text-zinc-400 font-bold border-b border-zinc-800 uppercase tracking-wider text-[10px]">
+          <table className="w-full text-left text-xs text-slate-700">
+            <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="p-3">GST Rate Slab</th>
                 <th className="p-3 text-right">Taxable Sales Value</th>
@@ -322,14 +322,14 @@ export const ReportsDashboard: React.FC = () => {
                 <th className="p-3 text-right">Total Tax Collected</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800 font-mono">
+            <tbody className="divide-y divide-slate-100 font-mono">
               {Object.entries(gstBreakdownMap).map(([rate, data]) => (
-                <tr key={rate} className="hover:bg-zinc-900">
-                  <td className="p-3 font-bold text-white">{rate}% GST Slab</td>
+                <tr key={rate} className="hover:bg-slate-50 transition-colors">
+                  <td className="p-3 font-bold text-slate-900">{rate}% GST Slab</td>
                   <td className="p-3 text-right">{formatCurrency(data.taxable)}</td>
-                  <td className="p-3 text-right text-zinc-400">{formatCurrency(data.cgst)}</td>
-                  <td className="p-3 text-right text-zinc-400">{formatCurrency(data.sgst)}</td>
-                  <td className="p-3 text-right font-black text-white">
+                  <td className="p-3 text-right text-slate-500">{formatCurrency(data.cgst)}</td>
+                  <td className="p-3 text-right text-slate-500">{formatCurrency(data.sgst)}</td>
+                  <td className="p-3 text-right font-black text-slate-900">
                     {formatCurrency(data.totalTax)}
                   </td>
                 </tr>

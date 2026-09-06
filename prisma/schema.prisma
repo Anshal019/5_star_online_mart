@@ -154,3 +154,86 @@ model ShopSettings {
   labelShowMRPText    Boolean @default(true)
   labelCustomHeader   String  @default("5STAR MART")
 }
+
+model Customer {
+  id               String   @id @default(cuid())
+  customerId       String   @unique
+  name             String
+  mobile           String
+  address          String?
+  shopName         String?
+  registrationDate DateTime @default(now())
+  notes            String?
+  totalUdhar       Float    @default(0)
+  totalReceived    Float    @default(0)
+  totalPending     Float    @default(0)
+  paymentStatus    String   @default("PAID")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  udharTransactions   UdharTransaction[]
+  paymentTransactions PaymentTransaction[]
+  reminderLogs        ReminderLog[]
+  customerNotes       CustomerNote[]
+
+  @@index([mobile])
+  @@index([customerId])
+}
+
+model UdharTransaction {
+  id              String   @id @default(cuid())
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  date            DateTime @default(now())
+  productName     String
+  quantity        Float
+  productPrice    Float
+  totalAmount     Float
+  amountPaidNow   Float    @default(0)
+  remainingAmount Float
+  dueDate         DateTime
+  notes           String?
+  createdAt       DateTime @default(now())
+
+  @@index([customerId])
+}
+
+model PaymentTransaction {
+  id            String   @id @default(cuid())
+  customerId    String
+  customer      Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  paymentAmount Float
+  paymentDate   DateTime @default(now())
+  paymentMethod String   @default("Cash")
+  refNumber     String?
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  @@index([customerId])
+}
+
+model ReminderLog {
+  id            String   @id @default(cuid())
+  customerId    String
+  customer      Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  reminderDate  DateTime @default(now())
+  pendingAmount Float
+  daysPending   Int
+  reminderType  String
+  status        String   @default("Sent")
+  createdAt     DateTime @default(now())
+
+  @@index([customerId])
+}
+
+model CustomerNote {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  noteDate   DateTime @default(now())
+  content    String
+  createdAt  DateTime @default(now())
+
+  @@index([customerId])
+}
+

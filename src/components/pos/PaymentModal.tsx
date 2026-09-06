@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { PaymentMethod, ShopSettings } from '@/types';
 import { formatCurrency } from '@/lib/formatters';
-import { Banknote, QrCode, CreditCard, Split, CheckCircle2, User, Phone } from 'lucide-react';
+import { Banknote, QrCode, CreditCard, Split, CheckCircle2, User, Phone, X } from 'lucide-react';
 
 interface PaymentModalProps {
   grandTotal: number;
@@ -39,7 +39,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (submitting) return; // Prevent double submit in modal UI
+    if (submitting) return;
     setSubmitting(true);
 
     const idempotencyKey = `tx-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
@@ -54,22 +54,22 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-      <div className="glass-panel w-full max-w-lg rounded-2xl border border-zinc-700 shadow-2xl p-6 space-y-6 bg-zinc-950">
-        <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+    <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-lg rounded-2xl border border-slate-200 shadow-2xl p-6 space-y-6 text-slate-900 overflow-hidden">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div>
-            <h3 className="text-xl font-bold text-white">Checkout & Payment</h3>
-            <p className="text-xs text-zinc-400">Complete transaction and issue receipt</p>
+            <h3 className="text-xl font-black text-slate-900">Checkout & Payment</h3>
+            <p className="text-xs text-slate-500 font-medium">Complete transaction and issue receipt</p>
           </div>
           <div className="text-right">
-            <span className="text-xs text-zinc-400">Total Payable</span>
-            <p className="text-2xl font-black text-white">{formatCurrency(grandTotal)}</p>
+            <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Total Payable</span>
+            <p className="text-2xl font-black text-slate-900 font-mono">{formatCurrency(grandTotal)}</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs font-semibold text-zinc-300 mb-2">Select Payment Method</label>
+            <label className="block text-xs font-extrabold text-slate-700 mb-2">Select Payment Method</label>
             <div className="grid grid-cols-4 gap-2">
               {[
                 { id: 'Cash', label: 'Cash', icon: Banknote },
@@ -86,8 +86,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                     onClick={() => setPaymentMode(m.id as PaymentMethod)}
                     className={`flex flex-col items-center justify-center p-3 rounded-xl border text-xs font-bold transition-all ${
                       active
-                        ? 'bg-white text-black border-white shadow-md'
-                        : 'bg-black border-zinc-800 text-zinc-300 hover:bg-zinc-900'
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                        : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                     }`}
                   >
                     <Icon className="w-5 h-5 mb-1" />
@@ -99,10 +99,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           </div>
 
           {paymentMode === 'Cash' && (
-            <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-zinc-300">Cash Received from Customer (₹)</label>
-                <span className="text-xs font-bold text-white">
+                <label className="text-xs font-bold text-slate-700">Cash Received from Customer (₹)</label>
+                <span className="text-xs font-black text-emerald-700 font-mono">
                   Change Return: {formatCurrency(cashChange)}
                 </span>
               </div>
@@ -112,7 +112,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                 step="1"
                 value={cashReceived}
                 onChange={(e) => setCashReceived(parseFloat(e.target.value) || 0)}
-                className="w-full px-4 py-2.5 rounded-xl glass-input text-xl font-mono font-bold text-center text-white"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-xl font-mono font-black text-center text-slate-900 outline-none focus:border-blue-600"
                 autoFocus
               />
 
@@ -124,7 +124,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                       key={amt}
                       type="button"
                       onClick={() => handleQuickCash(amt)}
-                      className="flex-1 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold border border-zinc-700"
+                      className="flex-1 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold border border-slate-300 shadow-xs"
                     >
                       ₹{amt}
                     </button>
@@ -134,8 +134,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           )}
 
           {paymentMode === 'UPI' && (
-            <div className="p-4 rounded-xl bg-black border border-zinc-800 text-center space-y-3">
-              <div className="w-36 h-36 mx-auto bg-white p-2 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center space-y-3">
+              <div className="w-36 h-36 mx-auto bg-white p-2 rounded-xl border border-slate-200 flex items-center justify-center shadow-md">
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=5staronlinemart@upi%26pn=${encodeURIComponent(
                     settings.shopName
@@ -144,52 +144,52 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                   className="w-full h-full object-contain"
                 />
               </div>
-              <p className="text-xs text-zinc-300 font-medium">
+              <p className="text-xs text-slate-600 font-medium">
                 Scan with GPay, PhonePe, Paytm or any UPI App
               </p>
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-3 pt-2">
+          <div className="grid grid-cols-2 gap-3 pt-1">
             <div>
-              <label className="block text-[11px] text-zinc-400 mb-1 flex items-center gap-1">
-                <User className="w-3 h-3 text-white" /> Customer Name (Optional)
+              <label className="block text-[11px] font-bold text-slate-600 mb-1 flex items-center gap-1">
+                <User className="w-3 h-3 text-slate-500" /> Customer Name (Optional)
               </label>
               <input
                 type="text"
                 placeholder="Walk-in Customer"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full px-3 py-1.5 text-xs rounded-lg glass-input text-white"
+                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white text-slate-900 font-medium focus:border-blue-600 outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-[11px] text-zinc-400 mb-1 flex items-center gap-1">
-                <Phone className="w-3 h-3 text-white" /> Mobile Number
+              <label className="block text-[11px] font-bold text-slate-600 mb-1 flex items-center gap-1">
+                <Phone className="w-3 h-3 text-slate-500" /> Mobile Number
               </label>
               <input
                 type="text"
                 placeholder="10-digit phone"
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
-                className="w-full px-3 py-1.5 text-xs rounded-lg glass-input text-white"
+                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white text-slate-900 font-medium focus:border-blue-600 outline-none"
               />
             </div>
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-zinc-800">
+          <div className="flex gap-3 pt-4 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-zinc-300 text-xs font-bold hover:bg-zinc-800"
+              className="flex-1 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="flex-1 py-2.5 rounded-xl bg-white text-black hover:bg-zinc-200 text-xs font-extrabold border-2 border-white shadow-lg flex items-center justify-center gap-2"
+              className="flex-1 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 text-xs font-extrabold shadow-md flex items-center justify-center gap-2 border border-blue-600 active:scale-95 transition-all"
             >
               <CheckCircle2 className="w-4 h-4" />
               {submitting ? 'Processing...' : 'Complete & Print Bill'}
