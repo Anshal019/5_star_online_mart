@@ -7,7 +7,7 @@ echo ====================================================================
 echo               5STAR ONLINE MART ERP - LOCAL SYSTEM                  
 echo ====================================================================
 echo.
-echo [1/3] Checking Node.js Environment...
+echo [1/4] Checking Node.js Environment...
 where node >nul 2>nul
 if %errorlevel% neq 0 (
     echo [ERROR] Node.js is not installed or not in PATH!
@@ -16,7 +16,14 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-echo [2/3] Detecting Local Wi-Fi IP for Phone Scanner...
+if not exist "%~dp0node_modules\" (
+    echo.
+    echo [NOTICE] node_modules not found. Running First-Time Setup...
+    call "%~dp0First_Time_Setup.bat"
+)
+
+echo.
+echo [2/4] Detecting Local Wi-Fi IP for Phone Scanner...
 for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr /c:"IPv4 Address"') do (
     set LOCAL_IP=%%a
 )
@@ -31,7 +38,8 @@ echo  Phone Scanner URL:    http://%LOCAL_IP%:3000/phone-scan
 echo ====================================================================
 echo.
 
-echo [3/3] Starting Local Server and Opening Browser...
+echo [3/4] Starting Local Server and Opening Browser...
 start "" "http://localhost:3000/pos"
 
+echo [4/4] Launching Next.js Dev Server...
 npm run dev
